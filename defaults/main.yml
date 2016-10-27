@@ -1,0 +1,10 @@
+---
+# Default variables - inventory or playbook overrides will be respected
+
+dest:
+backup_dir:
+#which version (dir name) to rollback to
+rollback_version:
+#if require to backup the current files
+require_backup: false
+backup_dir_name: "{{ansible_date_time.date}}-{{ansible_date_time.hour}}{{ansible_date_time.minute}}{{ansible_date_time.second}}"

@@ -1,0 +1,50 @@
+---
+# Rollback to previous backup
+
+
+- name: Check variables passed in
+  assert:
+    that:
+      - dest is defined
+      - backup_dir is defined
+      - rollback_version is defined
+
+- set_fact:
+    rollback_dir: "{{backup_dir|regex_replace('/$','')}}/{{rollback_version}}/"   
+- stat: path={{rollback_dir}} get_checksum=false get_md5=false
+  register: rollback_dir_stat
+- name: Check if rollback dir exist
+  assert:
+    that: rollback_dir_stat.stat.exists and rollback_dir_stat.stat.isdir
+
+- set_fact:
+    backup_dir:
+    backup_dir_full:
+  when: not require_backup
+- set_fact:
+    backup_dir_full: "{{backup_dir|regex_replace('/$','')}}/{{backup_dir_name}}/"
+  when: require_backup
+
+#- include: "{{inventory_dir}}/roles/quekky.deploy-files/tasks/main.yml" src="{{rollback_dir}}" backup_dir="{{backup_dir2}}"
+
+
+
+- name: Create temp file
+  shell: mktemp
+  register: temp_file
+
+- include: copy_dir.yml src_file={{rollback_dir}} dest_file={{dest}} backup_dir_partial=
+  
+#print result
+- name: Remove temp file
+  command: cat {{temp_file.stdout}}
+  register: files_uploaded
+- file: path=temp_file.stdout state=absent
+- file: path=backup_dir_full state=absent
+  when: require_backup and files_uploaded.stdout_lines|length == 0 
+- name: "Files rollback:"
+  debug: var=files_uploaded.stdout_lines
+- name: "Backups are at:"
+  debug: var=backup_dir_name
+  when: require_backup and files_uploaded.stdout_lines|length > 0
+
