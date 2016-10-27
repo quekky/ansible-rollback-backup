@@ -1,5 +1,5 @@
 ---
-- debug: msg="copy_dir.yml src_file={{src_file}} dest_file={{dest_file}} backup_dir_full={{backup_dir_full}} backup_dir_partial={{backup_dir_partial}} remote_src={{remote_src}}"
+#- debug: msg="copy_dir.yml src_file={{src_file}} dest_file={{dest_file}} backup_dir_full={{backup_dir_full}} backup_dir_partial={{backup_dir_partial}} remote_src={{remote_src}}"
 
 - name: Find files to copy
   find: paths="{{src_file}}" recurse=yes
