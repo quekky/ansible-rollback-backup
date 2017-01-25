@@ -33,7 +33,7 @@
   shell: mktemp
   register: temp_file
 
-- include: copy_dir.yml src_file={{rollback_dir}} dest_file={{dest}} backup_dir_partial=
+- include: copy_dir.yml src_file={{rollback_dir}} dest_file={{dest}}
   
 #print result
 - name: Remove temp file
